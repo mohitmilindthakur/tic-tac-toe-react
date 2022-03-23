@@ -11,7 +11,7 @@ function getAdjacentCells(inputCell: inputCell) {
 
 }
 
-function isGameWon(inputCell: inputCell, inputs: string[][]) {
+function isGameWon(inputs: string[][]) {
     let isCol1 = inputs[0][0] && inputs[0][0] === inputs[1][0] && inputs[1][0] === inputs[2][0];
     let isCol2 = inputs[0][1] && inputs[0][1] === inputs[1][1] && inputs[1][1] === inputs[2][1];
     let isCol3 = inputs[0][2] && inputs[0][2] === inputs[1][2] && inputs[1][2] === inputs[2][2];
@@ -19,6 +19,9 @@ function isGameWon(inputCell: inputCell, inputs: string[][]) {
     let isRow1 = inputs[0][0] && inputs[0][0] === inputs[0][1] && inputs[0][1] === inputs[0][2];
     let isRow2 = inputs[1][0] && inputs[1][0] === inputs[1][1] && inputs[1][1] === inputs[1][2];
     let isRow3 = inputs[2][0] && inputs[2][0] === inputs[2][1] && inputs[2][1] === inputs[2][2];
+
+    let isDiag1 = inputs[0][0] && inputs[0][0] === inputs[1][1] && inputs[1][1] === inputs[2][2];
+    let isDiag2 = inputs[0][2] && inputs[0][2] === inputs[1][1] && inputs[1][1] === inputs[2][0];
 
     if (isCol1) {
         return ['col1', inputs[0][0]];
@@ -45,14 +48,26 @@ function isGameWon(inputCell: inputCell, inputs: string[][]) {
     if (isRow3) {
         return ['row3', inputs[2][0]];
     }
+
+    if (isDiag1) {
+        return ['diag1', inputs[0][0]];
+    }
+
+    if (isDiag2) {
+        return ['diag2', inputs[0][2]];
+    }
+
+    return false;
 }
 
 interface GameState {
     inputs: inputs;
+    isGameWon: boolean;
 }
 
 const INITIAL_STATE: GameState = {
-    inputs: Array(3).fill(Array(3).fill(""))
+    inputs: Array(3).fill(Array(3).fill("")),
+    isGameWon: false
 }
 
 export interface action {
@@ -70,7 +85,10 @@ const reducer = (state: GameState, action: action): GameState => {
             let [x, y] = action.payload.inputCell;
             newState[x][y] = action.payload.value;
 
-            return newState;
+            let won = isGameWon(newState)
+            console.log("WON", won);
+
+            return { isGameWon: won ? true : false, inputs: newState };
 
         default:
             return state;
@@ -82,13 +100,27 @@ const Game: React.FC = () => {
     let [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
     let setInput = useCallback((inputCell: inputCell, value: string) => {
-        dispatch({type: "INPUT", payload: {inputCell, value}})
+        dispatch({ type: "INPUT", payload: { inputCell, value } })
     }, [])
 
     return (
         <div>
-            <h1>Game</h1>
-            <Board  setInput={setInput} />
+            {
+                !state.isGameWon && (
+                    <>
+                        <h1>Game</h1>
+                        <Board setInput={setInput} inputs={state.inputs} />
+                    </>
+                )
+            }
+
+            {
+                state.isGameWon && (
+                    <>
+                    <h1>Game Won</h1>
+                    </>
+                )
+            }
         </div>
     )
 }
