@@ -1,0 +1,26 @@
+.board {
+    width: 500px;
+    height: 500px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    margin: 0 auto;
+    /* border: 1px solid black; */
+}
+
+
+.bl {
+    border-left: 1px solid var(--border-color);
+}
+
+.br {
+    border-right: 1px solid var(--border-color);
+}
+
+.bt {
+    border-top: 1px solid var(--border-color);
+}
+
+.bb {
+    border-bottom: 1px solid var(--border-color);
+}

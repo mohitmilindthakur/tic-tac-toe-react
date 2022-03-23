@@ -1,0 +1,16 @@
+.tile {
+    cursor: pointer;
+    transition: all .1s linear;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 24px;
+
+    font-family: 'Sue Ellen Francisco', cursive;
+    letter-spacing: 25px;
+}
+
+.tile:hover {
+    background-color: rgb(255, 227, 227);
+}
